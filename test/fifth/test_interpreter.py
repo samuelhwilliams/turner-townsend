@@ -1,6 +1,8 @@
-from argparse import FileType
-import contextlib
+from code import interact
+from unittest import mock
+
 import pytest
+
 from fifth.exceptions import FifthInterpreterError
 from fifth.interpreter import FifthInterpreter, _check_stack_has_at_least_n_elements
 
@@ -72,17 +74,17 @@ class TestFifthInterpreter:
         ),
     )
     def test_add(self, initial_stack, expected_result):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.add()
-        assert self.interpreter._stack[-1] == expected_result
+        interpreter.add()
+        assert interpreter._stack[-1] == expected_result
 
     def test_add_stack_fewer_than_2_elements(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.add()
+            interpreter.add()
 
         assert str(e.value) == "Stack size (0) below required size of 2"
 
@@ -95,17 +97,17 @@ class TestFifthInterpreter:
         ),
     )
     def test_subtract(self, initial_stack, expected_result):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.subtract()
-        assert self.interpreter._stack[-1] == expected_result
+        interpreter.subtract()
+        assert interpreter._stack[-1] == expected_result
 
     def test_subtract_stack_fewer_than_2_elements(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.subtract()
+            interpreter.subtract()
 
         assert str(e.value) == "Stack size (0) below required size of 2"
 
@@ -118,17 +120,17 @@ class TestFifthInterpreter:
         ),
     )
     def test_multiply(self, initial_stack, expected_result):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.multiply()
-        assert self.interpreter._stack[-1] == expected_result
+        interpreter.multiply()
+        assert interpreter._stack[-1] == expected_result
 
     def test_multiply_stack_fewer_than_2_elements(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.multiply()
+            interpreter.multiply()
 
         assert str(e.value) == "Stack size (0) below required size of 2"
 
@@ -142,17 +144,17 @@ class TestFifthInterpreter:
         ),
     )
     def test_divide(self, initial_stack, expected_result):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.divide()
-        assert self.interpreter._stack[-1] == expected_result
+        interpreter.divide()
+        assert interpreter._stack[-1] == expected_result
 
     def test_divide_stack_fewer_than_2_elements(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.divide()
+            interpreter.divide()
 
         assert str(e.value) == "Stack size (0) below required size of 2"
 
@@ -165,17 +167,17 @@ class TestFifthInterpreter:
         ),
     )
     def test_push(self, initial_stack, value, expected_result):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.push(value)
-        assert self.interpreter._stack == expected_result
+        interpreter.push(value)
+        assert interpreter._stack == expected_result
 
     def test_push_non_numeric(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.push("abc")
+            interpreter.push("abc")
 
         assert (
             str(e.value)
@@ -191,18 +193,18 @@ class TestFifthInterpreter:
         ),
     )
     def test_pop(self, initial_stack, expected_stack):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.pop()
+        interpreter.pop()
 
-        assert self.interpreter._stack == expected_stack
+        assert interpreter._stack == expected_stack
 
     def test_pop_empty_stack(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.pop()
+            interpreter.pop()
 
         assert str(e.value) == "Stack size (0) below required size of 1"
 
@@ -214,24 +216,24 @@ class TestFifthInterpreter:
         ),
     )
     def test_swap(self, initial_stack, expected_stack):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.swap()
+        interpreter.swap()
 
-        assert self.interpreter._stack == expected_stack
+        assert interpreter._stack == expected_stack
 
     def test_swap_stack_fewer_than_2_elements(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.swap()
+            interpreter.swap()
 
         assert str(e.value) == "Stack size (0) below required size of 2"
 
-        self.interpreter.push("1")
+        interpreter.push("1")
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.swap()
+            interpreter.swap()
 
         assert str(e.value) == "Stack size (1) below required size of 2"
 
@@ -243,17 +245,47 @@ class TestFifthInterpreter:
         ),
     )
     def test_duplicate(self, initial_stack, expected_stack):
-        self.interpreter = FifthInterpreter()
-        self.interpreter._stack = initial_stack
+        interpreter = FifthInterpreter()
+        interpreter._stack = initial_stack
 
-        self.interpreter.duplicate()
+        interpreter.duplicate()
 
-        assert self.interpreter._stack == expected_stack
+        assert interpreter._stack == expected_stack
 
     def test_duplicate_empty_stack(self):
-        self.interpreter = FifthInterpreter()
+        interpreter = FifthInterpreter()
 
         with pytest.raises(FifthInterpreterError) as e:
-            self.interpreter.duplicate()
+            interpreter.duplicate()
 
         assert str(e.value) == "Stack size (0) below required size of 1"
+
+    @pytest.mark.parametrize(
+        ("command", "method"),
+        (
+            ("+", "add"),
+            ("-", "subtract"),
+            ("*", "multiply"),
+            ("/", "divide"),
+            ("push 3", "push"),
+            ("pop", "pop"),
+            ("swap", "swap"),
+            ("dup", "duplicate"),
+        ),
+    )
+    def test_interpret_valid_commands(self, command, method):
+        interpreter = FifthInterpreter()
+        interpreter._stack = [1, 2]
+
+        with mock.patch.object(interpreter, method) as mock_method:
+            interpreter.interpret(command)
+
+        assert mock_method.call_count == 1
+
+    def test_interpret_unknown_command(self):
+        interpreter = FifthInterpreter()
+
+        with pytest.raises(FifthInterpreterError) as e:
+            interpreter.interpret("invalid")
+
+        assert str(e.value) == "Unknown command: invalid (interpreted as: ['invalid'])"

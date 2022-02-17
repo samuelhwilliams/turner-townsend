@@ -3,7 +3,7 @@ import textwrap
 
 
 class TestMain:
-    def test_interpreter(self):
+    def test_entrypoint(self):
         process = subprocess.Popen(
             ["python", "main.py"],
             stdin=subprocess.PIPE,
