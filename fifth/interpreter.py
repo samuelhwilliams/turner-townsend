@@ -72,7 +72,7 @@ class FifthInterpreter:
     def duplicate(self):
         self._stack.append(self._stack[-1])
 
-    def interpret(self, command):
+    def interpret(self, command: str):
         normalised_command = command.strip().lower()
         args = normalised_command.split()
 
