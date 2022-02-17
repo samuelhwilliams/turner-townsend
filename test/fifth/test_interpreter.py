@@ -159,19 +159,19 @@ class TestFifthInterpreter:
         assert str(e.value) == "Stack size (0) below required size of 2"
 
     @pytest.mark.parametrize(
-        "initial_stack, value, expected_result",
+        "initial_stack, value, expected_stack",
         (
             ([], "0", [0]),
             ([], "1", [1]),
             ([1], "2", [1, 2]),
         ),
     )
-    def test_push(self, initial_stack, value, expected_result):
+    def test_push(self, initial_stack, value, expected_stack):
         interpreter = FifthInterpreter()
         interpreter._stack = initial_stack
 
         interpreter.push(value)
-        assert interpreter._stack == expected_result
+        assert interpreter._stack == expected_stack
 
     def test_push_non_numeric(self):
         interpreter = FifthInterpreter()
