@@ -1,0 +1,2 @@
+class FifthInterpreterError(Exception):
+    pass
