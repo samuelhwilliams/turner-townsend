@@ -66,19 +66,20 @@ class TestDecorators:
 
 class TestFifthInterpreter:
     @pytest.mark.parametrize(
-        "initial_stack, expected_result",
+        "initial_stack, expected_stack",
         (
-            ([1, 2], 3),
-            ([0, 2], 2),
-            ([3, 5], 8),
+            ([1, 2], [3]),
+            ([0, 2], [2]),
+            ([3, 5], [8]),
+            ([1, 2, 3], [1, 5]),
         ),
     )
-    def test_add(self, initial_stack, expected_result):
+    def test_add(self, initial_stack, expected_stack):
         interpreter = FifthInterpreter()
         interpreter._stack = initial_stack
 
         interpreter.add()
-        assert interpreter._stack[-1] == expected_result
+        assert interpreter._stack == expected_stack
 
     def test_add_stack_fewer_than_2_elements(self):
         interpreter = FifthInterpreter()
@@ -89,19 +90,20 @@ class TestFifthInterpreter:
         assert str(e.value) == "Stack size (0) below required size of 2"
 
     @pytest.mark.parametrize(
-        "initial_stack, expected_result",
+        "initial_stack, expected_stack",
         (
-            ([1, 2], -1),
-            ([0, 2], -2),
-            ([5, 3], 2),
+            ([1, 2], [-1]),
+            ([0, 2], [-2]),
+            ([5, 3], [2]),
+            ([1, 2, 3], [1, -1]),
         ),
     )
-    def test_subtract(self, initial_stack, expected_result):
+    def test_subtract(self, initial_stack, expected_stack):
         interpreter = FifthInterpreter()
         interpreter._stack = initial_stack
 
         interpreter.subtract()
-        assert interpreter._stack[-1] == expected_result
+        assert interpreter._stack == expected_stack
 
     def test_subtract_stack_fewer_than_2_elements(self):
         interpreter = FifthInterpreter()
@@ -112,19 +114,20 @@ class TestFifthInterpreter:
         assert str(e.value) == "Stack size (0) below required size of 2"
 
     @pytest.mark.parametrize(
-        "initial_stack, expected_result",
+        "initial_stack, expected_stack",
         (
-            ([1, 2], 2),
-            ([0, 2], 0),
-            ([5, 3], 15),
+            ([1, 2], [2]),
+            ([0, 2], [0]),
+            ([5, 3], [15]),
+            ([1, 2, 3], [1, 6]),
         ),
     )
-    def test_multiply(self, initial_stack, expected_result):
+    def test_multiply(self, initial_stack, expected_stack):
         interpreter = FifthInterpreter()
         interpreter._stack = initial_stack
 
         interpreter.multiply()
-        assert interpreter._stack[-1] == expected_result
+        assert interpreter._stack == expected_stack
 
     def test_multiply_stack_fewer_than_2_elements(self):
         interpreter = FifthInterpreter()
@@ -135,20 +138,21 @@ class TestFifthInterpreter:
         assert str(e.value) == "Stack size (0) below required size of 2"
 
     @pytest.mark.parametrize(
-        "initial_stack, expected_result",
+        "initial_stack, expected_stack",
         (
-            ([1, 2], 0),
-            ([0, 2], 0),
-            ([5, 3], 1),
-            ([8, 2], 4),
+            ([1, 2], [0]),
+            ([0, 2], [0]),
+            ([5, 3], [1]),
+            ([8, 2], [4]),
+            ([1, 4, 2], [1, 2]),
         ),
     )
-    def test_divide(self, initial_stack, expected_result):
+    def test_divide(self, initial_stack, expected_stack):
         interpreter = FifthInterpreter()
         interpreter._stack = initial_stack
 
         interpreter.divide()
-        assert interpreter._stack[-1] == expected_result
+        assert interpreter._stack == expected_stack
 
     def test_divide_stack_fewer_than_2_elements(self):
         interpreter = FifthInterpreter()
